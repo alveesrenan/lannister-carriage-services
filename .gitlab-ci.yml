@@ -1,0 +1,51 @@
+stages:
+  - compile
+  - test
+  - package
+  - deploy
+
+variables:
+  MAVEN_IMAGE: maven:3.5.2-jdk-8-alpine
+
+cache:
+  key: ${CI_COMMIT_REF_NAME}
+  paths:
+    - .m2/
+
+compile:
+  image: ${MAVEN_IMAGE}
+  stage: compile
+  artifacts:
+    paths:
+      - .m2/
+    expire_in: 1 day
+  script:
+    - mvn compile
+
+test:
+  image: ${MAVEN_IMAGE}
+  stage: test
+  script:
+    - mvn test
+  dependencies:
+    - compile
+
+test-it:
+  image: ${MAVEN_IMAGE}
+  stage: test
+  script:
+    - mvn verify -DskipTest
+  dependencies:
+    - compile
+
+package:
+  image: ${MAVEN_IMAGE}
+  stage: package
+  artifacts:
+    paths:
+      - target/*.jar
+    expire_in: 1 day
+  script:
+    - mvn clean package -DskipTests
+  dependencies:
+    - compile

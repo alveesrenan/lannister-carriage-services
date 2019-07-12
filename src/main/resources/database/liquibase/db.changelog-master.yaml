@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: alvees.renan
+      changes:
+      - sqlFile:
+          path: database/sql/2018-06-25-create-schemas.sql

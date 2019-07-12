@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+
+  avenuecode-database:
+    image: healthcheck/postgres
+    container_name: avenuecode-database
+    healthcheck:
+      interval: 10s
+      timeout: 1s
+      retries: 10
+    volumes:
+      - ./assets/initdb/:/docker-entrypoint-initdb.d/
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+
+  avenuecode-app:
+    image: registry.gitlab.com/alvees.renan/java-challenge-ac001
+    container_name: avenuecode-app
+    ports:
+      - "8080:8080"
+      - "8787:8787"
+    depends_on:
+      - avenuecode-database
+    environment:
+      PROFILE: prod
+      DATABASE_HOST: avenuecode-database
+      DATABASE_SCHEMA: avenuecode_database
+      DATABASE_USER: avenuecode
+      DATABASE_PASSWORD: 123456

@@ -1,0 +1,74 @@
+server.port: 8080
+
+spring:
+  application:
+    name: avenuecode-assessment
+  profiles.active: ${PROFILE:local}
+
+liquibase.enabled: true
+management.security.enabled: false
+liquibase.change-log: classpath:/database/liquibase/db.changelog-master.yaml
+
+logging.level:
+  root: INFO
+  com.avenuecode: INFO
+
+---
+
+spring:
+  profiles: local
+  datasource:
+    initialize: true
+    url: jdbc:h2:mem:avenuecode_database;MODE=PostgreSQL;DB_CLOSE_ON_EXIT=FALSE
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    database: h2
+    show-sql: true
+    hibernate.ddl-auto: none
+
+liquibase:
+  drop-first: false
+  contexts: local
+
+---
+
+spring:
+  profiles: test
+  datasource:
+    initialize: true
+    url: jdbc:h2:mem:avenuecode_database;MODE=PostgreSQL;DB_CLOSE_ON_EXIT=FALSE
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    database: h2
+    show-sql: false
+    hibernate.ddl-auto: create-drop
+
+liquibase:
+  drop-first: true
+  contexts: test
+
+---
+
+spring:
+  profiles: dev,stg,qas,prod
+  datasource:
+    url: jdbc:postgresql://${DATABASE_HOST}/${DATABASE_SCHEMA}
+    driverClassName: org.postgresql.Driver
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
+  jpa:
+    database: postgresql
+    show-sql: true
+    hibernate.ddl-auto: none
+
+liquibase:
+  drop-first: false
+  contexts: production
+
+logging.level:
+  root: INFO
+  com.avenuecode: INFO
