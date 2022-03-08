@@ -21,7 +21,7 @@
 
         <!-- project properties -->
         <lombok.version>1.16.14</lombok.version>
-        <liquibase.version>3.5.3</liquibase.version>
+        <liquibase.version>4.8.0</liquibase.version>
         <mapstruct.version>1.2.0.Final</mapstruct.version>
     </properties>
 
